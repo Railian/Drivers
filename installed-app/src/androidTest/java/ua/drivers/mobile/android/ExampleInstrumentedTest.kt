@@ -1,4 +1,4 @@
-package ua.drivers.android
+package ua.drivers.mobile.android
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4

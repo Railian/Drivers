@@ -1,4 +1,4 @@
-package ua.drivers.android
+package ua.drivers.mobile.android
 
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton

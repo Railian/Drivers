@@ -1,4 +1,4 @@
-package ua.drivers.android
+package ua.drivers.mobile.android
 
 import org.junit.Test
 
