@@ -1,16 +1,18 @@
-package ua.drivers.mobile.android.feature.authorization.data
+package ua.drivers.mobile.android.feature.authorization.domain
 
-import ua.drivers.mobile.android.feature.authorization.data.model.LoggedInUser
+import ua.drivers.mobile.android.feature.authorization.contract.AuthorizationApi
+import ua.drivers.mobile.android.feature.authorization.contract.User
+import ua.drivers.mobile.android.feature.authorization.contract.Result
 
 /**
  * Class that requests authentication and user information from the remote data source and
  * maintains an in-memory cache of login status and user credentials information.
  */
 
-class LoginRepository(val dataSource: LoginDataSource) {
+class LoginRepository(val dataSource: AuthorizationApi) {
 
     // in-memory cache of the loggedInUser object
-    var user: LoggedInUser? = null
+    var user: User? = null
         private set
 
     val isLoggedIn: Boolean
@@ -27,7 +29,7 @@ class LoginRepository(val dataSource: LoginDataSource) {
         dataSource.logout()
     }
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
+    fun login(username: String, password: String): Result<User> {
         // handle login
         val result = dataSource.login(username, password)
 
@@ -38,8 +40,8 @@ class LoginRepository(val dataSource: LoginDataSource) {
         return result
     }
 
-    private fun setLoggedInUser(loggedInUser: LoggedInUser) {
-        this.user = loggedInUser
+    private fun setLoggedInUser(user: User) {
+        this.user = user
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }

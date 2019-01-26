@@ -1,4 +1,4 @@
-package ua.drivers.mobile.android.feature.authorization.data
+package ua.drivers.mobile.android.feature.authorization.contract
 
 /**
  * A generic class that holds a value with its loading status.
