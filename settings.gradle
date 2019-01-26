@@ -1,1 +1,1 @@
-include  ':core', ':installed-app'
+include  ':core', ':installed-app', ':feature_authorization'
