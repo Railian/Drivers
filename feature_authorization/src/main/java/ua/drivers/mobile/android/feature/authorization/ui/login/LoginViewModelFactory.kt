@@ -2,8 +2,8 @@ package ua.drivers.mobile.android.feature.authorization.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ua.drivers.mobile.android.feature.authorization.data.LoginDataSource
-import ua.drivers.mobile.android.feature.authorization.data.LoginRepository
+import ua.drivers.mobile.android.feature.authorization.data.AuthorizationApiImpl
+import ua.drivers.mobile.android.feature.authorization.domain.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -16,7 +16,7 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(
                 loginRepository = LoginRepository(
-                    dataSource = LoginDataSource()
+                    dataSource = AuthorizationApiImpl()
                 )
             ) as T
         }

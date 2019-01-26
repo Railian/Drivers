@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import ua.drivers.mobile.android.feature.authorization.data.LoginRepository
-import ua.drivers.mobile.android.feature.authorization.data.Result
+import ua.drivers.mobile.android.feature.authorization.domain.LoginRepository
+import ua.drivers.mobile.android.feature.authorization.contract.Result
 
 import ua.drivers.mobile.android.feature.authorization.R
 
@@ -49,6 +49,6 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5;
+        return password.length > 5
     }
 }
