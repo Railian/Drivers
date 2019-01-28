@@ -13,7 +13,7 @@
     <application>
 
         <activity
-                android:name=".ui.login.AuthorizationActivity"
+                android:name=".presentation.view.AuthorizationActivity"
                 android:label="@string/title_activity_authorization"
                 android:exported="true">
 

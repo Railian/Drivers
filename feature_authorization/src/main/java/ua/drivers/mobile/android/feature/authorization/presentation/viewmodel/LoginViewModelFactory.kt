@@ -1,9 +1,11 @@
-package ua.drivers.mobile.android.feature.authorization.ui.login
+package ua.drivers.mobile.android.feature.authorization.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ua.drivers.mobile.android.feature.authorization.data.AuthorizationApiImpl
+import ua.drivers.mobile.android.feature.authorization.domain.EmailValidator
 import ua.drivers.mobile.android.feature.authorization.domain.LoginRepository
+import ua.drivers.mobile.android.feature.authorization.domain.PasswordValidator
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.
@@ -17,7 +19,9 @@ class LoginViewModelFactory : ViewModelProvider.Factory {
             return LoginViewModel(
                 loginRepository = LoginRepository(
                     dataSource = AuthorizationApiImpl()
-                )
+                ),
+                emailValidator = EmailValidator(),
+                passwordValidator = PasswordValidator()
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

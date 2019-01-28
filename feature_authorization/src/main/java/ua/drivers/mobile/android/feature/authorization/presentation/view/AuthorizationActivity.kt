@@ -1,4 +1,4 @@
-package ua.drivers.mobile.android.feature.authorization.ui.login
+package ua.drivers.mobile.android.feature.authorization.presentation.view
 
 import android.app.Activity
 import androidx.lifecycle.Observer
@@ -16,6 +16,10 @@ import android.widget.ProgressBar
 import android.widget.Toast
 
 import ua.drivers.mobile.android.feature.authorization.R
+import ua.drivers.mobile.android.feature.authorization.presentation.viewmodel.LoginViewModel
+import ua.drivers.mobile.android.feature.authorization.presentation.model.LoggedInUserViewEntity
+import ua.drivers.mobile.android.feature.authorization.presentation.model.LoginResult
+import ua.drivers.mobile.android.feature.authorization.presentation.viewmodel.LoginViewModelFactory
 
 class AuthorizationActivity : AppCompatActivity() {
 
@@ -31,52 +35,46 @@ class AuthorizationActivity : AppCompatActivity() {
         val login = findViewById<Button>(R.id.login)
         val loading = findViewById<ProgressBar>(R.id.loading)
 
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
+        loginViewModel = ViewModelProviders.of(
+            this,
+            LoginViewModelFactory()
+        )
             .get(LoginViewModel::class.java)
 
-        loginViewModel.loginFormState.observe(this@AuthorizationActivity, Observer {
-            val loginState = it ?: return@Observer
+        loginViewModel.validationResult.observe(this@AuthorizationActivity, Observer {validationResult->
+            validationResult ?: return@Observer
 
-            // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
+            username.error = if (validationResult.isEmailValid) null else "Email is not valid"
+            password.error = if (validationResult.isPasswordValid) null else "Password is not valid"
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
-            }
-            if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
-            }
         })
 
-        loginViewModel.loginResult.observe(this@AuthorizationActivity, Observer {
-            val loginResult = it ?: return@Observer
+        loginViewModel.loginResult.observe(this@AuthorizationActivity, Observer {loginResult ->
 
-            loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
-            }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
-            }
-            setResult(Activity.RESULT_OK)
+            if(loginResult is LoginResult.Loading)loading.visibility = View.VISIBLE
+            else{
+                loading.visibility = View.GONE
 
-            //Complete and destroy login activity once successful
-            finish()
+                if (loginResult is LoginResult.Error ) {
+                    showLoginFailed(loginResult.errorMessageId)
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
+                }
+                if (loginResult is LoginResult.Success) {
+                    updateUiWithUser(loginResult.loggedInUser)
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
+            }
         })
 
         username.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                username.text.toString(),
-                password.text.toString()
-            )
+            username.error = null
         }
 
         password.apply {
             afterTextChanged {
-                loginViewModel.loginDataChanged(
-                    username.text.toString(),
-                    password.text.toString()
-                )
+                password.error = null
             }
 
             setOnEditorActionListener { _, actionId, _ ->
@@ -91,13 +89,15 @@ class AuthorizationActivity : AppCompatActivity() {
             }
 
             login.setOnClickListener {
-                loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
+                loginViewModel.login(
+                    username.text.toString(),
+                    password.text.toString()
+                )
             }
         }
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUiWithUser(model: LoggedInUserViewEntity) {
         val welcome = getString(R.string.welcome)
         val displayName = model.displayName
         // TODO : initiate successful logged in experience
